@@ -2,7 +2,7 @@ from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect
 from sqlalchemy.exc import IntegrityError
 
-from schemas.book_schema import BookSchema, display_book
+from schemas.book_schema import *
 from schemas.error_schema import ErrorSchema
 from models.book import Book
 from models import Session
@@ -31,7 +31,6 @@ def add_book(form: BookSchema):
         release_date=form.release_date
     )
 
-    # TODO: Lógica do BD.
     try:
         session = Session()
         session.add(book)
@@ -42,3 +41,32 @@ def add_book(form: BookSchema):
     except Exception as e:
         return {'message': str(e)}, 400
 
+
+@app.get('/books', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
+def get_books():
+    session = Session()
+    books = session.query(Book).all()
+
+    if not books:
+        return {'books': []}, 200
+    else:
+        return display_book_list(books), 200
+    
+@app.get('/book', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
+def get_book(query: BookSearchSchema):
+    session = Session()
+
+    db_query = session.query(Book)
+
+    if query.name:
+        db_query = db_query.filter(Book.name == query.name)
+
+    if query.author:
+        db_query = db_query.filter(Book.author == query.author)
+
+    book = db_query.first()
+
+    if not book:
+        return {'message': 'O livro não foi encontrado.'}, 404
+    else :
+        return display_book(book), 200
