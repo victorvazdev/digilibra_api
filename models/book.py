@@ -36,3 +36,10 @@ class Book(Base):
         # Caso a data de adição for informada, ela será configurada ao invés da data atual.
         if insertion_date:
             self.insertion_date = insertion_date
+        
+    # def update_book(self, book_updated):
+    #     self.name = book_updated.name if book_updated.name is not None else self.name
+    #     self.author = book_updated.author if book_updated.author is not None else self.author
+    #     self.quantity = book_updated.quantity if book_updated.quantity is not None else self.quantity
+    #     self.value = book_updated.value if book_updated.value is not None else self.value
+    #     self.release_date = book_updated.release_date if book_updated.release_date is not None else self.release_date
