@@ -13,4 +13,4 @@ app.register_api(author_bp)
 
 @app.get('/')
 def home():
-    return redirect('/openapi/')
+    return redirect('/openapi/swagger')

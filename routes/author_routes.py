@@ -6,7 +6,6 @@ from models.author import Author
 from schemas.error_schema import ErrorSchema
 from schemas.author_schema import *
 
-
 author_tag = Tag(name='author', description='Gerenciamento de autores.')
 author_bp = APIBlueprint('author', __name__, abp_tags=[author_tag])
 
