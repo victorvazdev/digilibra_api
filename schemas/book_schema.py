@@ -5,6 +5,8 @@ from datetime import date
 from models.book import Book
 
 class BookSchema(BaseModel):
+    '''Define como um novo livro deve ser representado para inserção no banco de dados.
+    '''
     name: str = Field('Como Treinar Bíceps', description='Nome do livro.')
     author_id: int = Field(1, description='ID do autor(a) do livro no sistema.')
     quantity: Optional[int] = Field(10, description='Quantidade disponível para o livro.')
@@ -12,16 +14,24 @@ class BookSchema(BaseModel):
     release_date: Optional[date] = Field(default=date(2025, 10, 12), description='Data de publicação do livro.')
 
 class BookListSchema(BaseModel):
+    '''Define como uma listagem de vários livros será retornada pela API.
+    '''
     books: List[BookSchema]
 
 class BookSearchSchema(BaseModel):
+    '''Define a estrutura e os parâmetros necessários para a busca de um livro específico.
+    '''
     name: str = Field('Como Treinar Bíceps', description='Nome do livro a ser buscado.')
     author_id: int = Field(1, description='ID do autor do livro a ser buscado.')
 
 class BookDeleteSchema(BaseModel):
+    '''Define a estrutura dos dados necessários para realizar a exclusão de um livro.
+    '''
     id: int = Field(description='ID do livro a ser deletado.')
 
 class BookUpdateSchema(BaseModel):
+    '''Define como os dados de um livro devem ser enviados para permitir a sua atualização.
+    '''
     id: int = Field(description='ID do livro a ser atualizado.')
     name: Optional[str] = Field(None, description='Novo nome do livro.')
     author_id: Optional[int] = Field(None, description='ID do novo autor(a) do livro.')
@@ -38,6 +48,9 @@ class BookUpdateSchema(BaseModel):
         return v
 
 def display_book(book: Book):
+    '''Retorna uma representação em dicionário do objeto Book, 
+    substituindo o ID do autor pelo seu nome de exibição.
+    '''
     return {
         'id': book.id,
         'name': book.name,
@@ -48,6 +61,9 @@ def display_book(book: Book):
     }
 
 def display_book_list(books: List[Book]):
+    '''Retorna uma representação em dicionário de uma lista de objetos Book, 
+    formatando cada um para exibição adequada.
+    '''
     book_list = []
 
     for book in books:

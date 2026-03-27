@@ -13,6 +13,11 @@ book_bp = APIBlueprint('book', __name__, abp_tags=[book_tag])
 
 @book_bp.post('/book', tags=[book_tag], responses={'200': BookSchema, '400': ErrorSchema})
 def add_book(form: BookSchema):
+    '''Cadastra um novo livro no acervo.
+    
+    Verifica primeiro se o ID do autor (author_id) fornecido existe no sistema. 
+    Se não existir, retorna erro 404. Caso exista, prossegue com a criação do livro.
+    '''
     session = Session()
     book = Book(
         name=form.name,
@@ -38,6 +43,11 @@ def add_book(form: BookSchema):
 
 @book_bp.get('/books', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
 def get_books():
+    '''Lista todos os livros cadastrados no acervo.
+    
+    Retorna os detalhes de todos os livros, incluindo o nome do autor mapeado 
+    através do relacionamento. Retorna uma lista vazia caso o acervo não tenha livros.
+    '''
     session = Session()
     books = session.query(Book).all()
 
@@ -49,6 +59,11 @@ def get_books():
 
 @book_bp.get('/book', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
 def get_book(query: BookSearchSchema):
+    '''Busca os detalhes de um livro específico.
+    
+    Pesquisa no banco de dados filtrando pelo nome do livro E pelo ID do autor. 
+    Retorna erro 404 se a combinação informada não for encontrada.
+    '''
     session = Session()
 
     db_query = session.query(Book)
@@ -66,6 +81,11 @@ def get_book(query: BookSearchSchema):
   
 @book_bp.delete('/book', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
 def delete_book(query: BookDeleteSchema):
+    '''Remove um livro do acervo.
+    
+    Busca o livro pelo seu ID e realiza a exclusão no banco de dados. 
+    Retorna erro 404 caso o ID fornecido não seja encontrado.
+    '''
     session = Session()
 
     db_query = session.query(Book)
@@ -82,6 +102,12 @@ def delete_book(query: BookDeleteSchema):
 
 @book_bp.put('/update_book', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
 def update_book(form: BookUpdateSchema):
+    '''Atualiza os dados de um livro existente.
+    
+    Busca o livro pelo ID e atualiza os campos fornecidos. Se um novo author_id for 
+    enviado, verifica se o autor correspondente existe antes de efetuar a atualização.
+    Retorna erro 404 caso o livro ou o novo autor não sejam encontrados.
+    '''
     session = Session()
 
     db_query = session.query(Book)
