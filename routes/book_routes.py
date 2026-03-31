@@ -79,7 +79,7 @@ def get_book(query: BookSearchSchema):
     return display_book(book), 200
 
   
-@book_bp.delete('/book', tags=[book_tag], responses={'200': BookListSchema, '404': ErrorSchema})
+@book_bp.delete('/book', tags=[book_tag], responses={'200': BookDeleteSchema, '404': ErrorSchema})
 def delete_book(query: BookDeleteSchema):
     '''Remove um livro do acervo.
     
@@ -91,11 +91,12 @@ def delete_book(query: BookDeleteSchema):
     db_query = session.query(Book)
     db_query = db_query.filter(Book.id == query.id)
     book = db_query.first()
+    author_name = book.author_rel.name if book.author_rel else 'Desconhecido'
     book_deleted = db_query.delete()
     session.commit()
 
     if book_deleted:
-        return {'message': f'Livro {book.name} de {book.author} foi removido com sucesso'}, 200
+        return {'message': f'Livro {book.name} de {author_name} (ID: {book.author_id}) foi removido com sucesso'}, 200
     else:
         return {'message': f'O livro de ID {query.id} não foi encontrado.'}, 404
     
